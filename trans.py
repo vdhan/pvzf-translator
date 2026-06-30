@@ -24,15 +24,15 @@ def hop_nhat_ds(a: list, b: list, khoa: str) -> list:
     """
     Hợp nhất 2 danh sách, nếu có phần tử trùng khóa thì chọn cái sau (danh sách B)
     """
-    tam: dict = {}
+    du_lieu: dict = {}
     for mon in a:
-        tam[mon[khoa]] = mon
+        du_lieu[mon[khoa]] = mon
 
     for mon in b:
-        tam[mon[khoa]] = mon
+        du_lieu[mon[khoa]] = mon
 
-    tam = xep_tu_dien(tam)
-    return list(tam.values())
+    du_lieu = xep_tu_dien(du_lieu)
+    return list(du_lieu.values())
 
 
 def hop_nhat_dict(a: dict, b: dict, khoa: str) -> dict:
@@ -43,18 +43,18 @@ def hop_nhat_dict(a: dict, b: dict, khoa: str) -> dict:
     if not isinstance(b[khoa], dict):
         return a[khoa]
 
-    tam: dict = {}
+    du_lieu: dict = {}
     khoa_moi: list = []
     khoa_cu: list = []
     for khoa_con in b[khoa]:
         if khoa_con in a[khoa]:
-            tam[khoa_con] = b[khoa][khoa_con]
+            du_lieu[khoa_con] = b[khoa][khoa_con]
         else:
             khoa_cu.append(b[khoa])
 
     for khoa_con in a[khoa]:
-        if khoa_con not in tam:
-            tam[khoa_con] = a[khoa][khoa_con]
+        if khoa_con not in du_lieu:
+            du_lieu[khoa_con] = a[khoa][khoa_con]
             khoa_moi.append(khoa_con)
 
     if khoa_moi or khoa_cu:
@@ -73,7 +73,7 @@ def hop_nhat_dict(a: dict, b: dict, khoa: str) -> dict:
 
             print()
 
-    return xep_tu_dien(tam)
+    return xep_tu_dien(du_lieu)
 
 
 def so_sanh_dict(a: dict, b: dict) -> dict:
@@ -105,11 +105,10 @@ def so_sanh_dict(a: dict, b: dict) -> dict:
 
 
 def so_sanh_almanac(thu_muc_a: Path, thu_muc_b: Path) -> None:
-    phan_he = 'Almanac'
     tep_moi: list = []
     ds_json: tuple = tuple(thu_muc_b.glob('*.json'))
     if ds_json:
-        duong_dan: str = f'{thu_muc_goc}/c/{phan_he}'
+        duong_dan: str = f'{thu_muc_goc}/c/Almanac'
         Path(duong_dan).mkdir(parents=True, exist_ok=True)
         for mon in ds_json:
             tep_b: str = str(mon)
@@ -134,18 +133,18 @@ def so_sanh_almanac(thu_muc_a: Path, thu_muc_b: Path) -> None:
                 muc: str = 'plants'
                 du_lieu: list = hop_nhat_ds(du_lieu_b.get(muc, []), du_lieu_a.get(muc, []), 'seedType')
                 with open(tep_c, 'w', encoding='utf-8') as f:
-                    json.dump({muc: du_lieu}, f, ensure_ascii=False, indent=4)
+                    json.dump({muc: du_lieu}, f, ensure_ascii=False, indent=2)
 
             elif tep_json == 'ZombieStringsTranslate.json':
                 muc: str = 'zombies'
                 du_lieu: list = hop_nhat_ds(du_lieu_b.get(muc, []), du_lieu_a.get(muc, []), 'theZombieType')
                 with open(tep_c, 'w', encoding='utf-8') as f:
-                    json.dump({muc: du_lieu}, f, ensure_ascii=False, indent=4)
+                    json.dump({muc: du_lieu}, f, ensure_ascii=False, indent=2)
 
             else:
                 du_lieu: dict = so_sanh_dict(du_lieu_b, du_lieu_a)
                 with open(tep_c, 'w', encoding='utf-8') as f:
-                    json.dump(du_lieu, f, ensure_ascii=False, indent=4)
+                    json.dump(du_lieu, f, ensure_ascii=False, indent=2)
 
             print()
 
@@ -158,12 +157,11 @@ def so_sanh_almanac(thu_muc_a: Path, thu_muc_b: Path) -> None:
 
 
 def so_sanh_strings(thu_muc_a: Path, thu_muc_b: Path) -> None:
-    phan_he: str = 'Strings'
     tep_moi: list = []
     tep_bom: list = []
     ds_json: tuple = tuple(thu_muc_b.glob('*.json'))
     if ds_json:
-        duong_dan: str = f'{thu_muc_goc}/c/{phan_he}'
+        duong_dan: str = f'{thu_muc_goc}/c/Strings'
         Path(duong_dan).mkdir(parents=True, exist_ok=True)
         for mon in ds_json:
             tep_b: str = str(mon)
@@ -197,7 +195,7 @@ def so_sanh_strings(thu_muc_a: Path, thu_muc_b: Path) -> None:
 
             du_lieu: dict = so_sanh_dict(du_lieu_b, du_lieu_a)
             with open(tep_c, 'w', encoding='utf-8') as f:
-                json.dump(du_lieu, f, ensure_ascii=False, indent=4)
+                json.dump(du_lieu, f, ensure_ascii=False, indent=2)
 
             print()
 

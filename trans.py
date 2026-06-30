@@ -6,7 +6,7 @@ from json import JSONDecodeError
 from pathlib import Path
 
 
-def sap_xep_dict(d: dict) -> dict:
+def xep_tu_dien(d: dict) -> dict:
     """
     Sắp xếp từ điển theo khóa
     """
@@ -31,7 +31,7 @@ def hop_nhat_ds(a: list, b: list, khoa: str) -> list:
     for mon in b:
         tam[mon[khoa]] = mon
 
-    tam = sap_xep_dict(tam)
+    tam = xep_tu_dien(tam)
     return list(tam.values())
 
 
@@ -73,7 +73,7 @@ def hop_nhat_dict(a: dict, b: dict, khoa: str) -> dict:
 
             print()
 
-    return sap_xep_dict(tam)
+    return xep_tu_dien(tam)
 
 
 def so_sanh_dict(a: dict, b: dict) -> dict:
@@ -101,7 +101,7 @@ def so_sanh_dict(a: dict, b: dict) -> dict:
 
         print()
 
-    return sap_xep_dict(c)
+    return xep_tu_dien(c)
 
 
 def so_sanh_almanac(thu_muc_a: Path, thu_muc_b: Path) -> None:

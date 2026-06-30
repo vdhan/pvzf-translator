@@ -10,7 +10,14 @@ def sap_xep_dict(d: dict) -> dict:
     """
     Sắp xếp từ điển theo khóa
     """
-    return dict(sorted(d.items()))
+    def sap_xep(tu_khoa: tuple) -> tuple:
+        khoa: str | int = tu_khoa[0]
+        try:
+            return (0, int(khoa))
+        except ValueError:
+            return (1, khoa)
+
+    return dict(sorted(d.items(), key=sap_xep))
 
 
 def hop_nhat_ds(a: list, b: list, khoa: str) -> list:
@@ -66,6 +73,8 @@ def hop_nhat_dict(a: dict, b: dict, khoa: str) -> dict:
 
             print()
 
+    return sap_xep_dict(tam)
+
 
 def so_sanh_dict(a: dict, b: dict) -> dict:
     """
@@ -77,7 +86,6 @@ def so_sanh_dict(a: dict, b: dict) -> dict:
         if khoa in a:
             if isinstance(a[khoa], dict):
                 c[khoa] = hop_nhat_dict(a, b, khoa)
-
             else:
                 c[khoa] = b[khoa]
 
@@ -93,22 +101,11 @@ def so_sanh_dict(a: dict, b: dict) -> dict:
 
         print()
 
-    return c
+    return sap_xep_dict(c)
 
 
-def so_sanh_almanac() -> None:
-    print('Mô đun Almanac')
+def so_sanh_almanac(thu_muc_a: Path, thu_muc_b: Path) -> None:
     phan_he = 'Almanac'
-    thu_muc_a = Path(dia_phuong, args.a, phan_he)
-    if not thu_muc_a.is_dir():
-        print(f'Thư mục {thu_muc_a} không tồn tại')
-        sys.exit(1)
-
-    thu_muc_b = Path(dia_phuong, args.b, phan_he)
-    if not thu_muc_b.is_dir():
-        print(f'Thư mục {thu_muc_b} không tồn tại')
-        sys.exit(1)
-
     tep_moi: list = []
     ds_json: tuple = tuple(thu_muc_b.glob('*.json'))
     if ds_json:
@@ -160,19 +157,8 @@ def so_sanh_almanac() -> None:
         print()
 
 
-def so_sanh_strings() -> None:
-    print('Mô đun Strings')
+def so_sanh_strings(thu_muc_a: Path, thu_muc_b: Path) -> None:
     phan_he: str = 'Strings'
-    thu_muc_a = Path(dia_phuong, args.a, phan_he)
-    if not thu_muc_a.is_dir():
-        print(f'Thư mục {thu_muc_a} không tồn tại')
-        sys.exit(1)
-
-    thu_muc_b = Path(dia_phuong, args.b, phan_he)
-    if not thu_muc_b.is_dir():
-        print(f'Thư mục {thu_muc_b} không tồn tại')
-        sys.exit(1)
-
     tep_moi: list = []
     tep_bom: list = []
     ds_json: tuple = tuple(thu_muc_b.glob('*.json'))
@@ -241,25 +227,33 @@ if __name__ == '__main__':
         formatter_class=RawDescriptionHelpFormatter)
 
     parser.add_argument('-v', '--version', action='version', version='So sánh Json 1.0.0')
-    parser.add_argument('modun', help='Mô đun cần so sánh (Almanac hoặc Strings)')
+    parser.add_argument('l', help='Đường dẫn thư mục PVZF-Translation/PvZ_Fusion_Translator/Localization/')
     parser.add_argument('a', nargs='?', default='Vietnamese', help='Ngôn ngữ đích (mặc định: tiếng Việt)')
     parser.add_argument('b', nargs='?', default='English', help='Ngôn ngữ nguồn (mặc định: tiếng Anh)')
     args: Namespace = parser.parse_args()
 
-    ds_phan_he: list = ['Almanac', 'Strings']
-    if args.modun not in ds_phan_he:
-        print('Mô đun không hợp lệ. Chỉ hỗ trợ Almanac hoặc Strings')
-        sys.exit(1)
-
-    tam = Path(thu_muc_goc, '../PvZ_Fusion_Translator/Localization')
+    tam = Path(args.l)
     dia_phuong = tam.resolve()
+    ds_phan_he: tuple = ('Almanac', 'Strings')
     if not dia_phuong.is_dir():
         print(f'Thư mục {dia_phuong} không tồn tại')
         sys.exit(1)
 
-    if args.modun == 'Almanac':
-        so_sanh_almanac()
-    elif args.modun == 'Strings':
-        so_sanh_strings()
+    for phan_he in ds_phan_he:
+        print(f'Mô đun {phan_he}')
+        thu_muc_a = Path(dia_phuong, args.a, phan_he)
+        if not thu_muc_a.is_dir():
+            print(f'Thư mục {thu_muc_a} không tồn tại')
+            sys.exit(1)
+
+        thu_muc_b = Path(dia_phuong, args.b, phan_he)
+        if not thu_muc_b.is_dir():
+            print(f'Thư mục {thu_muc_b} không tồn tại')
+            sys.exit(1)
+
+        if phan_he == 'Almanac':
+            so_sanh_almanac(thu_muc_a, thu_muc_b)
+        elif phan_he == 'Strings':
+            so_sanh_strings(thu_muc_a, thu_muc_b)
 
     print('Xong')

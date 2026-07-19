@@ -25,11 +25,21 @@ def hop_nhat_ds(a: list, b: list, khoa: str) -> list:
     Hợp nhất 2 danh sách, nếu có phần tử trùng khóa thì chọn cái sau (danh sách B)
     """
     du_lieu: dict = {}
-    for mon in a:
-        du_lieu[mon[khoa]] = mon
-
+    ma_moi: list = []
     for mon in b:
         du_lieu[mon[khoa]] = mon
+
+    for mon in a:
+        if mon[khoa] not in du_lieu:
+            du_lieu[mon[khoa]] = mon
+            ma_moi.append(mon[khoa])
+
+    if ma_moi:
+        print('Các định danh mới:')
+        for mon in ma_moi:
+            print(f'- {mon}')
+
+        print()
 
     du_lieu = xep_tu_dien(du_lieu)
     return list(du_lieu.values())

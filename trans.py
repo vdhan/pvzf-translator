@@ -1,5 +1,6 @@
 import json
 import sys
+import typing
 
 from argparse import ArgumentParser, RawDescriptionHelpFormatter, Namespace
 from json import JSONDecodeError
@@ -10,7 +11,7 @@ def xep_tu_dien(d: dict) -> dict:
     """
     Sắp xếp từ điển theo khóa
     """
-    def sap_xep(tu_khoa: tuple) -> tuple:
+    def sap_xep(tu_khoa: typing.ItemsView) -> tuple:
         khoa: str | int = tu_khoa[0]
         try:
             return (0, int(khoa))
